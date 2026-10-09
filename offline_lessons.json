@@ -1,0 +1,4 @@
+[
+ {"id":"offline-cone-90","slug":"cone-offset-90","title":"Cone with Off-Set Intersection Pipe (90°)","category":"Fabrication","angle":90,"content":"Cone MD=(200+400)/2=300 mm; circumference=300×3.142≈942.6 mm. Pipe MD=(150+140)/2=145 mm; circumference≈455.3 mm. Slant height≈608.3 mm. Use inside size for bending-machine jobs."},
+ {"id":"offline-round-square-60","slug":"round-square-60-pvw-2-3","title":"Round Pipe with Off-Set Square Pipe (60°) — PVW 2-3","category":"Fabrication","angle":60,"content":"Main pipe OD=323 mm, ID=309 mm, MD=316 mm; circumference≈992.7 mm. Branch square inside size=188×188 mm from 200×200 mm outside size with 6 mm wall. Transfer applicable side-view hole-profile points to the development before cutting."}
+]

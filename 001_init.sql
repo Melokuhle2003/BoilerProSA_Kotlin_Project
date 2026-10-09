@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS users (
+ id UUID PRIMARY KEY,email TEXT NOT NULL UNIQUE,display_name TEXT NOT NULL,password_hash TEXT NOT NULL,
+ role TEXT NOT NULL CHECK(role IN ('ADMIN','INSTRUCTOR','LEARNER')),is_active BOOLEAN NOT NULL DEFAULT TRUE,
+ created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS refresh_sessions (
+ id UUID PRIMARY KEY,user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,token_hash TEXT NOT NULL UNIQUE,
+ expires_at TIMESTAMPTZ NOT NULL,revoked_at TIMESTAMPTZ,created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),last_used_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS lessons (
+ id UUID PRIMARY KEY,slug TEXT NOT NULL UNIQUE,title TEXT NOT NULL,angle INTEGER,category TEXT NOT NULL,image_asset TEXT,
+ content_json JSONB NOT NULL DEFAULT '{}'::jsonb,is_published BOOLEAN NOT NULL DEFAULT TRUE,
+ updated_by UUID REFERENCES users(id),created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE TABLE IF NOT EXISTS audit_logs (
+ id BIGSERIAL PRIMARY KEY,user_id UUID REFERENCES users(id),action TEXT NOT NULL,target_type TEXT,target_id TEXT,
+ ip TEXT,user_agent TEXT,metadata JSONB NOT NULL DEFAULT '{}'::jsonb,created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_refresh_user ON refresh_sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_lessons_slug ON lessons(slug);
+CREATE INDEX IF NOT EXISTS idx_audit_user_created ON audit_logs(user_id,created_at DESC);

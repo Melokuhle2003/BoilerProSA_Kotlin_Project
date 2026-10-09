@@ -1,0 +1,11 @@
+import crypto from 'node:crypto'; import {query,pool} from '../db.js';
+const lessons=[
+{slug:'cone-offset-90',title:'Cone with Off-Set Intersection Pipe (90°)',angle:90,category:'Fabrication',image_asset:'/uploads/cone_off_set_90.png',
+content_json:{jobDescription:'Fabricate a cone with an off-set intersection pipe at 90°.',rules:['Mean diameter: MD=(OD+ID)÷2; C=MD×π.','Use inside size where a bending job specifies an inside dimension.','Cone development is based on slant height.'],dimensions:{D1:'200 mm',D2:'400 mm',H:'600 mm',pipeOD:'150 mm',pipeID:'140 mm',pipeLength:'300 mm',offset:'100 mm',angle:'90°'},calculations:{coneMD:'300 mm',coneCircumference:'942.6 mm',pipeMD:'145 mm',pipeCircumference:'455.3 mm',slantHeight:'608.3 mm'},steps:['Perform calculations','Mark out','Cut material','Form cone','Prepare pipe','Create intersection','Check fit and alignment','Final inspection']}},
+{slug:'round-square-60-pvw-2-3',title:'Round Pipe with Off-Set Square Pipe (60°) — PVW 2-3',angle:60,category:'Fabrication',image_asset:'/uploads/round_square_60.png',
+content_json:{jobDescription:'Fabricate a round pipe with an off-set square pipe at 60°.',rules:['Round MD=(OD+ID)÷2; C=MD×π.','Square inside size=OS−(2×wall).','Take hole-profile points from the applicable side view and transfer them to the development layout.'],dimensions:{mainOD:'323 mm',mainID:'309 mm',mainLength:'1000 mm',branchOS:'200×200 mm',branchWall:'6 mm',branchIS:'188×188 mm',branchLength:'508 mm',offset:'150 mm',angle:'60°'},calculations:{mainMD:'316 mm',mainCircumference:'992.7 mm',branchInsidePerimeter:'752 mm'},steps:['Measure and mark','Mark intersection long point','Mark hole profile','Transfer points','Cut hole','Fit branch','Check alignment','Final inspection']}}
+];
+for(const l of lessons) await query(`INSERT INTO lessons(id,slug,title,angle,category,image_asset,content_json) VALUES($1,$2,$3,$4,$5,$6,$7)
+ON CONFLICT(slug) DO UPDATE SET title=EXCLUDED.title,angle=EXCLUDED.angle,category=EXCLUDED.category,image_asset=EXCLUDED.image_asset,content_json=EXCLUDED.content_json,updated_at=NOW()`,
+[crypto.randomUUID(),l.slug,l.title,l.angle,l.category,l.image_asset,JSON.stringify(l.content_json)]);
+await pool.end(); console.log('Lessons seeded');

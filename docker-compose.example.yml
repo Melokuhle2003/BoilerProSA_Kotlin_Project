@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: boilerpro
+      POSTGRES_USER: boilerpro
+      POSTGRES_PASSWORD: CHANGE_ME
+    volumes:
+      - boilerpro_pg:/var/lib/postgresql/data
+    networks: [internal]
+  api:
+    build: ./server
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 8443
+      DATABASE_URL: postgres://boilerpro:CHANGE_ME@postgres:5432/boilerpro
+      JWT_SECRET: CHANGE_ME_TO_A_LONG_RANDOM_SECRET
+      REFRESH_TOKEN_DAYS: 30
+      ALLOWED_ORIGINS: https://admin.example.co.za
+    depends_on: [postgres]
+    networks: [internal]
+    ports:
+      - "8443:8443"
+networks:
+  internal:
+volumes:
+  boilerpro_pg:
